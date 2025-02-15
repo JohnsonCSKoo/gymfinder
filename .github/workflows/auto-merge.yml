@@ -21,8 +21,8 @@ jobs:
 
       - name: Get list of feature branches
         run: |
-          # Get all branches that are not master (or any other branches you want to exclude)
-          feature_branches=$(git branch -r | grep 'origin/features' | sed 's/origin\///')
+          # Get all branches that should be updated
+          feature_branches=$(git branch -r | grep 'origin/features/' | sed 's/origin\///')
           echo "Feature branches: $feature_branches"
 
       - name: Merge master into feature branches
