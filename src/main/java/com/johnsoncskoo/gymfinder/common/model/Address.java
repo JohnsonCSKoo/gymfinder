@@ -1,5 +1,8 @@
-package com.johnsoncskoo.gymfinder.common;
+package com.johnsoncskoo.gymfinder.common.model;
 
+import com.johnsoncskoo.gymfinder.common.enums.Country;
+import com.johnsoncskoo.gymfinder.common.enums.State;
+import com.johnsoncskoo.gymfinder.gym.model.Gym;
 import com.johnsoncskoo.gymfinder.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,8 +41,4 @@ public class Address {
 
     @Column(nullable = false)
     private Country country;
-
-    @OneToOne(optional = false)
-    @JoinColumn(name = "user_id")
-    private User user;
 }

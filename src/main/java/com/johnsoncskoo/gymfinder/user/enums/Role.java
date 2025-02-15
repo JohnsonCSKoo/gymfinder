@@ -1,4 +1,4 @@
-package com.johnsoncskoo.gymfinder.user;
+package com.johnsoncskoo.gymfinder.user.enums;
 
 public enum Role {
     ADMIN,

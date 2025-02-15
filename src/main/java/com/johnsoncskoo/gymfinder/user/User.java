@@ -1,6 +1,7 @@
 package com.johnsoncskoo.gymfinder.user;
 
-import com.johnsoncskoo.gymfinder.common.Address;
+import com.johnsoncskoo.gymfinder.common.model.Address;
+import com.johnsoncskoo.gymfinder.user.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,7 +40,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(optional = true)
+    @OneToOne(
+            optional = false,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JoinColumn(name = "address_id")
     private Address address;
 
