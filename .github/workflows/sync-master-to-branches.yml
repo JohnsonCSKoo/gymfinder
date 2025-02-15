@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Git configuration
@@ -21,16 +21,22 @@ jobs:
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
 
-      - name: Fetch latest changes from origin
+      - name: Fetch all branches from origin
         run: |
           git fetch --all
 
-      - name: Merge master into specified branches
+      - name: Get branches matching pattern and merge master into them
         run: |
-          # Get branches from input
-          IFS=',' read -ra BRANCHES <<< "${{ github.event.inputs.branches }}"
+          # Use the pattern from inputs to find matching branches
+          branches=$(git branch -r | grep "origin/${{ github.event.inputs.pattern }}" | sed 's/origin\///')
 
-          for branch in "${BRANCHES[@]}"; do
+          if [ -z "$branches" ]; then
+            echo "No branches found matching the pattern: ${{ github.event.inputs.pattern }}"
+            exit 0
+          fi
+
+          # Loop through each branch and merge master into it
+          for branch in $branches; do
             echo "Merging master into $branch"
             git checkout $branch
             git pull origin $branch
