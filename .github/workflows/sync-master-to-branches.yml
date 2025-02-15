@@ -1,0 +1,39 @@
+name: Sync master to certain branches
+
+on:
+  workflow_dispatch:
+    inputs:
+      branches:
+        description: 'Comma-separated list of branches to sync'
+        required: true
+        default: 'features/*'
+
+jobs:
+  sync-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Set up Git configuration
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+      - name: Fetch latest changes from origin
+        run: |
+          git fetch --all
+
+      - name: Merge master into specified branches
+        run: |
+          # Get branches from input
+          IFS=',' read -ra BRANCHES <<< "${{ github.event.inputs.branches }}"
+
+          for branch in "${BRANCHES[@]}"; do
+            echo "Merging master into $branch"
+            git checkout $branch
+            git pull origin $branch
+            git merge origin/master --no-edit
+            git push origin $branch
+          done
