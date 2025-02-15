@@ -5,7 +5,7 @@ import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationResponse;
 import com.johnsoncskoo.gymfinder.auth.AuthenticationService;
 import com.johnsoncskoo.gymfinder.auth.dto.RegisterRequest;
 import com.johnsoncskoo.gymfinder.security.JwtService;
-import com.johnsoncskoo.gymfinder.user.Role;
+import com.johnsoncskoo.gymfinder.user.enums.Role;
 import com.johnsoncskoo.gymfinder.user.User;
 import com.johnsoncskoo.gymfinder.user.UserRepository;
 import lombok.RequiredArgsConstructor;
