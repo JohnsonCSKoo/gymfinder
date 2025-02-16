@@ -1,6 +1,7 @@
 package com.johnsoncskoo.gymfinder.user;
 
 import com.johnsoncskoo.gymfinder.common.model.Address;
+import com.johnsoncskoo.gymfinder.common.model.BaseAuditable;
 import com.johnsoncskoo.gymfinder.user.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends BaseAuditable implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -41,7 +42,7 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToOne(
-            optional = false,
+            optional = true,
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )

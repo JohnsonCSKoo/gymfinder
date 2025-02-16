@@ -1,5 +1,6 @@
 package com.johnsoncskoo.gymfinder.gym.model;
 
+import com.johnsoncskoo.gymfinder.common.model.Auditable;
 import com.johnsoncskoo.gymfinder.gym.enums.ServiceType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "services")
-public class Service {
+public class Service extends Auditable {
 
     @Id
     @GeneratedValue

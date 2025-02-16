@@ -1,6 +1,8 @@
 package com.johnsoncskoo.gymfinder.auth.dto;
 
-import com.johnsoncskoo.gymfinder.auth.Password;
+import com.johnsoncskoo.gymfinder.common.validator.Enum;
+import com.johnsoncskoo.gymfinder.common.validator.Password;
+import com.johnsoncskoo.gymfinder.user.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class RegisterRequestDTO {
 
     @NotEmpty(message = "First name cannot be empty")
     private String firstName;
@@ -29,4 +31,7 @@ public class RegisterRequest {
     @NotEmpty(message = "Password cannot be empty")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
+
+    @Enum(enumClass = Role.class)
+    private Role role;
 }

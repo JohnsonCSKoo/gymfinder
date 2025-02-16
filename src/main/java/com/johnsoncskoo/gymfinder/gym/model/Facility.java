@@ -1,6 +1,7 @@
 package com.johnsoncskoo.gymfinder.gym.model;
 
-import com.johnsoncskoo.gymfinder.file.Image;
+import com.johnsoncskoo.gymfinder.common.model.Auditable;
+import com.johnsoncskoo.gymfinder.file.model.Image;
 import com.johnsoncskoo.gymfinder.gym.enums.FacilityType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "facilities")
-public class Facility {
+public class Facility extends Auditable {
 
     @Id
     @GeneratedValue
@@ -43,4 +44,13 @@ public class Facility {
             inverseJoinColumns = @JoinColumn(name = "image_id")
     )
     private Set<Image> images;
+
+
+    public void addImage(Image image) {
+        images.add(image);
+    }
+
+    public void removeImage(Image image) {
+        images.remove(image);
+    }
 }

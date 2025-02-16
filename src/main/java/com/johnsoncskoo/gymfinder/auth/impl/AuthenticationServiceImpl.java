@@ -1,9 +1,9 @@
 package com.johnsoncskoo.gymfinder.auth.impl;
 
-import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationRequest;
-import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationResponse;
+import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationRequestDTO;
+import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationResponseDTO;
 import com.johnsoncskoo.gymfinder.auth.AuthenticationService;
-import com.johnsoncskoo.gymfinder.auth.dto.RegisterRequest;
+import com.johnsoncskoo.gymfinder.auth.dto.RegisterRequestDTO;
 import com.johnsoncskoo.gymfinder.security.JwtService;
 import com.johnsoncskoo.gymfinder.user.enums.Role;
 import com.johnsoncskoo.gymfinder.user.User;
@@ -24,7 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponseDTO register(RegisterRequestDTO request) {
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -35,13 +35,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
 
         var jwt = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .token(jwt)
                 .build();
     }
 
     @Override
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
 
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .token(jwtService.generateToken(user))
                 .build();
     }

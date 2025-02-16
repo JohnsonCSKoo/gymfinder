@@ -1,7 +1,8 @@
 package com.johnsoncskoo.gymfinder.gym.model;
 
 import com.johnsoncskoo.gymfinder.common.model.Address;
-import com.johnsoncskoo.gymfinder.file.Image;
+import com.johnsoncskoo.gymfinder.common.model.Auditable;
+import com.johnsoncskoo.gymfinder.file.model.Image;
 import com.johnsoncskoo.gymfinder.gym.enums.OpeningStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "gyms")
-public class Gym {
+public class Gym extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -52,4 +53,12 @@ public class Gym {
 
     @OneToMany(mappedBy = "gym")
     private List<Service> services;
+
+    public void addImage(Image image) {
+        images.add(image);
+    }
+
+    public void removeImage(Image image) {
+        images.remove(image);
+    }
 }

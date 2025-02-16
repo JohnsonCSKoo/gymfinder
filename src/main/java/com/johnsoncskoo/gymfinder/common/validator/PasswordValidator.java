@@ -1,4 +1,4 @@
-package com.johnsoncskoo.gymfinder.auth;
+package com.johnsoncskoo.gymfinder.common.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

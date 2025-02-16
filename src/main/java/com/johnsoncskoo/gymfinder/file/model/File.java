@@ -1,6 +1,7 @@
-package com.johnsoncskoo.gymfinder.file;
+package com.johnsoncskoo.gymfinder.file.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.johnsoncskoo.gymfinder.common.model.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "files")
-public class File {
+public class File extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,6 +31,8 @@ public class File {
     private String contentType;
 
     @Column
-    @JsonIgnore
-    private byte[] data;
+    private String filePath;
+
+    @Column(nullable = true)
+    private String fileUrl;
 }
