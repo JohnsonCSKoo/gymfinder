@@ -7,6 +7,7 @@ import com.johnsoncskoo.gymfinder.file.Repository.FileRepository;
 import com.johnsoncskoo.gymfinder.file.dto.CreateFileDTO;
 import com.johnsoncskoo.gymfinder.file.dto.FileDTO;
 import com.johnsoncskoo.gymfinder.file.model.File;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +32,10 @@ public class FileServiceImpl implements FileService {
     private String FILE_PATH;
 
     private final FileRepository fileRepository;
-    private final Path fileStorageLocation;
+    private Path fileStorageLocation;
 
-    @Autowired
-    public FileServiceImpl(FileRepository fileRepository) throws IOException {
-        this.fileRepository = fileRepository;
-
-        // setup directory in server to store uploaded files
+    @PostConstruct
+    public void init() throws IOException {
         fileStorageLocation = Paths.get(FILE_PATH)
                 .toAbsolutePath()
                 .normalize();

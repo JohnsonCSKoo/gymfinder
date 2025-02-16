@@ -5,6 +5,7 @@ import com.johnsoncskoo.gymfinder.common.validator.Password;
 import com.johnsoncskoo.gymfinder.user.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,6 @@ public class RegisterRequestDTO {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
-    @Enum(enumClass = Role.class)
+    @NotNull
     private Role role;
 }
