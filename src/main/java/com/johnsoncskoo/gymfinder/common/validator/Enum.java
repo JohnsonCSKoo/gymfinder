@@ -1,4 +1,4 @@
-package com.johnsoncskoo.gymfinder.auth;
+package com.johnsoncskoo.gymfinder.common.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -6,11 +6,13 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = PasswordValidator.class)
+@Constraint(validatedBy = EnumValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Password {
-    String message() default "Password must contain at least one uppercase letter, one number, and one special character";
+public @interface Enum {
+    Class<? extends java.lang.Enum<?>> enumClass();
+
+    String message() default "Value is not valid";
 
     Class<?>[] groups() default {};
 

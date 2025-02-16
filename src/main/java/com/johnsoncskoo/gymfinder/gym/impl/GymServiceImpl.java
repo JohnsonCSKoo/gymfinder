@@ -2,6 +2,8 @@ package com.johnsoncskoo.gymfinder.gym.impl;
 
 import com.johnsoncskoo.gymfinder.common.AddressService;
 import com.johnsoncskoo.gymfinder.common.exceptions.ResourceNotFoundException;
+import com.johnsoncskoo.gymfinder.file.ImageService;
+import com.johnsoncskoo.gymfinder.file.dto.CreateImageDTO;
 import com.johnsoncskoo.gymfinder.gym.GymService;
 import com.johnsoncskoo.gymfinder.gym.dto.EquipmentDTO;
 import com.johnsoncskoo.gymfinder.gym.dto.FacilityDTO;
@@ -17,8 +19,6 @@ import com.johnsoncskoo.gymfinder.gym.repository.ServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class GymServiceImpl implements GymService {
@@ -28,6 +28,7 @@ public class GymServiceImpl implements GymService {
     private final FacilityRepository facilityRepository;
     private final ServiceRepository serviceRepository;
     private final AddressService addressService;
+    private final ImageService imageService;
 
     @Override
     public GymDTO createGym(GymDTO gymDTO) {
@@ -66,10 +67,22 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public List<GymDTO> getAllGyms() {
+    public Iterable<GymDTO> getAllGyms() {
         return gymRepository.findAll()
                 .stream().map(GymDTO::fromEntity)
                 .toList();
+    }
+
+    @Override
+    public String uploadGymImage(String id, CreateImageDTO createImageDTO) {
+        var gym = gymRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.toException(Gym.class, id));
+
+        var createdImage = imageService.createImage(createImageDTO);
+        gym.addImage(createdImage);
+        gymRepository.save(gym);
+
+        return createdImage.getFile().getFileUrl();
     }
 
     @Override
@@ -105,10 +118,22 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public List<EquipmentDTO> getAllEquipments(String gymId) {
+    public Iterable<EquipmentDTO> getAllEquipments(String gymId) {
         return equipmentRepository.findAllByGymId(gymId)
                 .stream().map(EquipmentDTO::fromEntity)
                 .toList();
+    }
+
+    @Override
+    public String uploadEquipmentImage(Integer id, CreateImageDTO createImageDTO) {
+        var equipment = equipmentRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.toException(Equipment.class, id));
+
+        var createdImage = imageService.createImage(createImageDTO);
+        equipment.addImage(createdImage);
+        equipmentRepository.save(equipment);
+
+        return createdImage.getFile().getFileUrl();
     }
 
     @Override
@@ -144,10 +169,22 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public List<FacilityDTO> getAllFacilities(String gymId) {
+    public Iterable<FacilityDTO> getAllFacilities(String gymId) {
         return facilityRepository.findAllByGymId(gymId)
                 .stream().map(FacilityDTO::fromEntity)
                 .toList();
+    }
+
+    @Override
+    public String uploadFacilityImage(Integer id, CreateImageDTO createImageDTO) {
+        var facility = facilityRepository.findById(id)
+                .orElseThrow(() -> ResourceNotFoundException.toException(Facility.class, id));
+
+        var createdImage = imageService.createImage(createImageDTO);
+        facility.addImage(createdImage);
+        facilityRepository.save(facility);
+
+        return createdImage.getFile().getFileUrl();
     }
 
     @Override
@@ -183,7 +220,7 @@ public class GymServiceImpl implements GymService {
     }
 
     @Override
-    public List<ServiceDTO> getAllServices(String gymId) {
+    public Iterable<ServiceDTO> getAllServices(String gymId) {
         return serviceRepository.findAllByGymId(gymId)
                 .stream().map(ServiceDTO::fromEntity)
                 .toList();

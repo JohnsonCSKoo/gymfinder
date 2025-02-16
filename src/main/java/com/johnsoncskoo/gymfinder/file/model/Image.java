@@ -1,5 +1,6 @@
-package com.johnsoncskoo.gymfinder.file;
+package com.johnsoncskoo.gymfinder.file.model;
 
+import com.johnsoncskoo.gymfinder.common.model.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "images")
-public class Image {
+public class Image extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
