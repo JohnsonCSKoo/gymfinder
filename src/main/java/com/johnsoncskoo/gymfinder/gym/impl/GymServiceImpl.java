@@ -1,7 +1,7 @@
 package com.johnsoncskoo.gymfinder.gym.impl;
 
 import com.johnsoncskoo.gymfinder.common.AddressService;
-import com.johnsoncskoo.gymfinder.common.exceptions.ResourceNotFoundException;
+import com.johnsoncskoo.gymfinder.common.exception.ResourceNotFoundException;
 import com.johnsoncskoo.gymfinder.file.ImageService;
 import com.johnsoncskoo.gymfinder.file.dto.CreateImageDTO;
 import com.johnsoncskoo.gymfinder.gym.GymService;

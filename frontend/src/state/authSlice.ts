@@ -8,8 +8,10 @@ interface AuthState {
     error: string | null;
 }
 
+const authToken: string | null = sessionStorage.getItem('jwt');
+
 const initialState: AuthState = {
-    token: null,
+    token: authToken,
     loading: false,
     error: null,
 };
@@ -43,6 +45,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         logout: (state) => {
+            sessionStorage.removeItem('jwt');
             state.token = null;
         },
     },
@@ -53,7 +56,7 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(registerUser.fulfilled, (state, action) => {
-                console.log("ACTION:", action);
+                sessionStorage.setItem('jwt', action.payload);
                 state.token = action.payload;
             })
             .addCase(registerUser.rejected, (state, action) => {
@@ -65,6 +68,7 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
+                sessionStorage.setItem('jwt', action.payload);
                 state.token = action.payload;
             })
             .addCase(loginUser.rejected, (state, action) => {

@@ -1,6 +1,6 @@
 package com.johnsoncskoo.gymfinder.file.Impl;
 
-import com.johnsoncskoo.gymfinder.common.exceptions.ResourceNotFoundException;
+import com.johnsoncskoo.gymfinder.common.exception.ResourceNotFoundException;
 import com.johnsoncskoo.gymfinder.file.FileService;
 import com.johnsoncskoo.gymfinder.file.ImageService;
 import com.johnsoncskoo.gymfinder.file.Repository.ImageRepository;

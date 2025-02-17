@@ -6,7 +6,7 @@ interface UserTypeSwitchProps {
     setIsGymOwner: (value: boolean) => void
 }
 
-export function UserTypeSwitch({ isGymOwner, setIsGymOwner }: UserTypeSwitchProps) {
+const UserTypeSwitch: React.FC<UserTypeSwitchProps> = ({ isGymOwner, setIsGymOwner }) => {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -30,3 +30,4 @@ export function UserTypeSwitch({ isGymOwner, setIsGymOwner }: UserTypeSwitchProp
     )
 }
 
+export default UserTypeSwitch;

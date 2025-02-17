@@ -7,4 +7,4 @@ export const register = (data: RegisterDto) =>
     axios.post<RegisterDto, AuthResponseDto>(`${BASE_URL}/register`, data);
 
 export const login = (data: LoginDto)  =>
-    axios.post<LoginDto, AuthResponseDto>(`${BASE_URL}/login`, data);
+    axios.post<LoginDto, AuthResponseDto>(`${BASE_URL}/authenticate`, data);

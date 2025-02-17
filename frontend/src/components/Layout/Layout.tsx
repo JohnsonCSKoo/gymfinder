@@ -1,32 +1,23 @@
-import type React from "react"
-// import type { Metadata } from "next"
-// import { Inter } from "next/font/google"
-// import "./globals.css"
-import OldHeader from "./OldHeader.tsx"
-import Footer from "./Footer"
+import type React from "react";
+import Header from "@/components/Layout/Header.tsx";
+import {useLocation} from "react-router-dom";
 
-// const inter = Inter({ subsets: ["latin"] })
-
-// export const metadata: Metadata = {
-//     title: "GymFinder",
-//     description: "Find your perfect gym",
-// }
 
 interface Props {
     children: React.ReactNode
 }
 
 const Layout: React.FC<Props> = ({ children }) => {
+
+    const location = useLocation();
+
     return (
-        <html lang="en">
-        <body>
         <div className="flex flex-col min-h-screen">
-            <OldHeader />
+            {location.pathname === "/login" || location.pathname === "/register" ?
+                <></>
+                : <Header />}
             <main className="flex-grow">{children}</main>
-            <Footer />
         </div>
-        </body>
-        </html>
     )
 };
 

@@ -2,7 +2,7 @@ package com.johnsoncskoo.gymfinder.common.impl;
 
 import com.johnsoncskoo.gymfinder.common.AddressService;
 import com.johnsoncskoo.gymfinder.common.dto.AddressDTO;
-import com.johnsoncskoo.gymfinder.common.exceptions.ResourceNotFoundException;
+import com.johnsoncskoo.gymfinder.common.exception.ResourceNotFoundException;
 import com.johnsoncskoo.gymfinder.common.model.Address;
 import com.johnsoncskoo.gymfinder.common.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;

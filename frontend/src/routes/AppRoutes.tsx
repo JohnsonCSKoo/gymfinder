@@ -5,24 +5,26 @@ import LoginPage from '@/pages/AuthPages/LoginPage';
 import { RootState } from '@/state/store';
 import { useSelector } from 'react-redux';
 import Layout from "@/components/Layout/Layout.tsx";
+import HomePage from "@/pages/HomePage/HomePage.tsx";
+import SettingsPage from "@/pages/SettingsPage/SettingsPage.tsx";
+import PrivateRoute from './PrivateRoute';
 
 const AppRoutes: React.FC = () => {
     const { token } = useSelector((state: RootState) => state.auth);
-
-    console.log(token);
 
     return (
         <Router>
             <Layout>
                 <Routes>
-                    {/*<Route path="/" element={<RegisterPage />} />*/}
+                    <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} />
+                    <Route path="/settings"
+                           element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
                     <Route
                         path="/register"
                         element={token ? <Navigate to="/" /> : <RegisterPage />} />
                     <Route
                         path="/login"
                         element={token ? <Navigate to="/" /> :<LoginPage />} />
-                    {/* Add more routes here */}
                 </Routes>
             </Layout>
         </Router>

@@ -4,6 +4,7 @@ import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationRequestDTO;
 import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationResponseDTO;
 import com.johnsoncskoo.gymfinder.auth.AuthenticationService;
 import com.johnsoncskoo.gymfinder.auth.dto.RegisterRequestDTO;
+import com.johnsoncskoo.gymfinder.common.exception.UserNotFoundException;
 import com.johnsoncskoo.gymfinder.security.JwtService;
 import com.johnsoncskoo.gymfinder.user.enums.Role;
 import com.johnsoncskoo.gymfinder.user.User;
@@ -50,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
 
         return AuthenticationResponseDTO.builder()
                 .token(jwtService.generateToken(user))
