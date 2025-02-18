@@ -1,8 +1,8 @@
-package com.johnsoncskoo.gymfinder.common.dto;
+package com.johnsoncskoo.gymfinder.address.dto;
 
-import com.johnsoncskoo.gymfinder.common.model.Address;
-import com.johnsoncskoo.gymfinder.common.enums.Country;
-import com.johnsoncskoo.gymfinder.common.enums.State;
+import com.johnsoncskoo.gymfinder.address.enums.Country;
+import com.johnsoncskoo.gymfinder.address.enums.State;
+import com.johnsoncskoo.gymfinder.address.model.Address;
 import lombok.Builder;
 
 @Builder

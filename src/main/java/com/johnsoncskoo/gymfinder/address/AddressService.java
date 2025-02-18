@@ -1,7 +1,7 @@
-package com.johnsoncskoo.gymfinder.common;
+package com.johnsoncskoo.gymfinder.address;
 
-import com.johnsoncskoo.gymfinder.common.dto.AddressDTO;
-import com.johnsoncskoo.gymfinder.common.model.Address;
+import com.johnsoncskoo.gymfinder.address.dto.AddressDTO;
+import com.johnsoncskoo.gymfinder.address.model.Address;
 
 public interface AddressService {
     Address createAddress(AddressDTO addressDTO);

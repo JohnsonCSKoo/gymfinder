@@ -1,164 +1,149 @@
-import type React from "react"
-
-import { useState } from "react"
+import React, {useState} from 'react';
+import {Role} from "@/@types/enums/role.ts";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {Separator} from "@/components/ui/separator.tsx";
+import { ArrowLeft } from "lucide-react"
+import {useNavigate} from "react-router-dom";
+import {RegisterDto} from "@/@types/auth";
+import {getEnumKey} from "@/lib/utils.ts";
+import {AppDispatch, RootState} from "@/state/store.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {registerUser} from "@/state/authSlice.ts";
+import {Label} from "@/components/ui/label.tsx";
+import UserTypeSwitch from "@/components/Register/UserTypeSwitch.tsx";
 
-const AccountSettings = () => {
-    const [isEditing, setIsEditing] = useState(false)
-    const [isChangingPassword, setIsChangingPassword] = useState(false)
-    const [accountData, setAccountData] = useState({
-        firstName: "John",
-        lastName: "Doe",
-        phone: "+1234567890",
-        email: "john.doe@example.com",
-        username: "@johndoe",
-        gender: "Male",
-    })
-    const [passwordData, setPasswordData] = useState({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-    })
+const RegisterForm: React.FC = () => {
+    const [step, setStep] = useState(1)
+    const [isGymOwner, setIsGymOwner] = useState(false)
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [formError, setFormError] = useState("")
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAccountData({ ...accountData, [e.target.name]: e.target.value })
+    const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const { loading, error } = useSelector((state: RootState) => state.auth);
+
+    const handleNext = () => {
+        setFormError("")
+        if (step === 2) {
+            if (!firstName || !lastName || !email) {
+                setFormError("All fields are required");
+                return;
+            }
+
+            const emailRegex = new RegExp(/^\S+@\S+\.\S+$/)
+            if (!emailRegex.test(email)) {
+                setFormError("Please enter a valid email address")
+                return
+            }
+        }
+
+        setStep(step + 1)
     }
 
-    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPasswordData({ ...passwordData, [e.target.name]: e.target.value })
+    const handleBack = () => {
+        setStep(step - 1)
     }
 
-    const handleGenderChange = (value: string) => {
-        setAccountData({ ...accountData, gender: value })
-    }
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setFormError("");
 
-    const handleSaveAccount = () => {
-        // Here you would typically send the account data to your backend
-        console.log("Saving account data:", accountData)
-        setIsEditing(false)
-    }
+        if (!password || !confirmPassword) {
+            setFormError("All fields are required");
+            return;
+        }
 
-    const handleSavePassword = () => {
-        // Here you would typically send the password data to your backend
-        console.log("Saving password data:", passwordData)
-        setIsChangingPassword(false)
-        setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
+        const passwordRegex = new RegExp(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\s:])(\S){8,}$/)
+        if (!passwordRegex.test(password)) {
+            setFormError("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character, and be at least 8 characters long");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setFormError("Passwords do not match");
+            return;
+        }
+
+        const registerDto: RegisterDto = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            role: getEnumKey(Role, isGymOwner ? Role.GYM_OWNER : Role.USER),
+        }
+
+        dispatch(registerUser(registerDto)).then(() => {
+            navigate("/");
+        });
     }
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-semibold">Account</h2>
-                <div>
-                    <Button variant="outline" className="mr-2" onClick={() => setIsChangingPassword(!isChangingPassword)}>
-                        {isChangingPassword ? "Cancel Password Change" : "Change Password"}
+        <form onSubmit={handleSubmit} className="space-y-6">
+            {step === 1 && (
+                <div className="space-y-4">
+                    <UserTypeSwitch isGymOwner={isGymOwner} setIsGymOwner={setIsGymOwner} />
+                    <Button type="button" onClick={handleNext} className="w-full">
+                        Next
                     </Button>
-                    <Button onClick={() => setIsEditing(!isEditing)}>{isEditing ? "Cancel" : "Edit"}</Button>
                 </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                        id="firstName"
-                        name="firstName"
-                        value={accountData.firstName}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                    />
-                </div>
-                <div>
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                        id="lastName"
-                        name="lastName"
-                        value={accountData.lastName}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                    />
-                </div>
-                <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" name="phone" value={accountData.phone} onChange={handleInputChange} disabled={!isEditing} />
-                </div>
-                <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" value={accountData.email} disabled={true} />
-                </div>
-                <div>
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                        id="username"
-                        name="username"
-                        value={accountData.username}
-                        onChange={handleInputChange}
-                        disabled={!isEditing}
-                    />
-                </div>
-                <div>
-                    <Label htmlFor="gender">Gender</Label>
-                    <Select disabled={!isEditing} value={accountData.gender} onValueChange={handleGenderChange}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
-                            <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
-            {isEditing && (
-                <Button className="mt-4" onClick={handleSaveAccount}>
-                    Save Account Changes
-                </Button>
             )}
 
-            <Separator className="my-6" />
+            {step === 2 && (
+                <div className="space-y-4">
+                    <Button type="button" variant="ghost" onClick={handleBack} className="mb-2">
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Back
+                    </Button>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="firstName">First Name</Label>
+                            <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="lastName">Last Name</Label>
+                            <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    </div>
+                    <Button type="button" onClick={handleNext} className="w-full">
+                        Next
+                    </Button>
+                </div>
+            )}
 
-            {isChangingPassword && (
-                <div className="mt-4 space-y-4">
-                    <h3 className="text-xl font-semibold">Change Password</h3>
-                    <div>
-                        <Label htmlFor="currentPassword">Current Password</Label>
-                        <Input
-                            id="currentPassword"
-                            name="currentPassword"
-                            type="password"
-                            value={passwordData.currentPassword}
-                            onChange={handlePasswordChange}
-                        />
+            {step === 3 && (
+                <div className="space-y-4">
+                    <Button type="button" variant="ghost" onClick={handleBack} className="mb-2">
+                        <ArrowLeft className="h-4 w-4 mr-2" /> Back
+                    </Button>
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
-                    <div>
-                        <Label htmlFor="newPassword">New Password</Label>
-                        <Input
-                            id="newPassword"
-                            name="newPassword"
-                            type="password"
-                            value={passwordData.newPassword}
-                            onChange={handlePasswordChange}
-                        />
-                    </div>
-                    <div>
+                    <div className="space-y-2">
                         <Label htmlFor="confirmPassword">Confirm Password</Label>
                         <Input
                             id="confirmPassword"
-                            name="confirmPassword"
                             type="password"
-                            value={passwordData.confirmPassword}
-                            onChange={handlePasswordChange}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </div>
-                    <Button onClick={handleSavePassword}>Save Password Changes</Button>
+                    <Button type="submit" className="w-full">
+                        Register
+                    </Button>
                 </div>
             )}
-        </div>
-    )
-}
 
-export default AccountSettings;
+            {formError && <p className="text-sm text-red-500 mt-2">{formError}</p>}
+        </form>
+    )
+};
+
+export default RegisterForm;

@@ -1,4 +1,4 @@
-package com.johnsoncskoo.gymfinder.file.Repository;
+package com.johnsoncskoo.gymfinder.file.repository;
 
 import com.johnsoncskoo.gymfinder.file.model.Image;
 import org.springframework.data.jpa.repository.JpaRepository;

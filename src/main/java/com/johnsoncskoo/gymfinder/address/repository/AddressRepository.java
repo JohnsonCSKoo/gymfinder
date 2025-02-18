@@ -1,6 +1,6 @@
-package com.johnsoncskoo.gymfinder.common.repository;
+package com.johnsoncskoo.gymfinder.address.repository;
 
-import com.johnsoncskoo.gymfinder.common.model.Address;
+import com.johnsoncskoo.gymfinder.address.model.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,12 +1,29 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { Button } from "@/components/ui/button"
 import AccountSettings from "@/components/settings/AccountSettings"
 import AddressSettings from "@/components/settings/AddressSettings"
 import DeleteAccountModal from "@/components/settings/DeleteAccountModal"
 import PasswordSettings from "@/components/Settings/PasswordSettings.tsx";
+import { getUser } from "@/api/userApi.ts";
+import {useSelector} from "react-redux";
+import {RootState} from "@/state/store.ts";
 
 const SettingsPage: React.FC = () => {
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const { id } = useSelector((state: RootState) => state.auth);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getUser(id!);
+                console.log(response);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+
+        fetchData();
+    }, [id]);
 
     return (
         <div className="container mx-auto py-8">

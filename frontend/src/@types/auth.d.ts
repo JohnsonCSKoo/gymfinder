@@ -1,4 +1,4 @@
-import { Role } from '../enums/role.enum';
+import { Role } from './enums/role';
 
 export interface RegisterDto {
     firstName: string;

@@ -1,6 +1,7 @@
 package com.johnsoncskoo.gymfinder.security.impl;
 
 import com.johnsoncskoo.gymfinder.security.JwtService;
+import com.johnsoncskoo.gymfinder.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -24,7 +25,7 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(jwt, Claims::getSubject);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -33,7 +34,7 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> extraClaims, User userDetails) {
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
@@ -52,7 +53,7 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(jwt, Claims::getExpiration);
     }
 
-    public boolean isTokenValid(String jwt, UserDetails userDetails) {
+    public boolean isTokenValid(String jwt, User userDetails) {
         final String username = extractUsername(jwt);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(jwt);
     }

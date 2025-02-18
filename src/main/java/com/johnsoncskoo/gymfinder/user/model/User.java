@@ -1,7 +1,8 @@
-package com.johnsoncskoo.gymfinder.user;
+package com.johnsoncskoo.gymfinder.user.model;
 
-import com.johnsoncskoo.gymfinder.common.model.Address;
+import com.johnsoncskoo.gymfinder.address.model.Address;
 import com.johnsoncskoo.gymfinder.common.model.BaseAuditable;
+import com.johnsoncskoo.gymfinder.user.enums.Gender;
 import com.johnsoncskoo.gymfinder.user.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,12 @@ public class User extends BaseAuditable implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(unique = true)
+    private String phoneNumber;
+
+    @Column(unique = true)
+    private String userTag;
+
     @Column(nullable = false)
     private String password;
 
@@ -41,13 +48,25 @@ public class User extends BaseAuditable implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @OneToOne(
             optional = true,
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JoinColumn(name = "address_id")
-    private Address address;
+    @JoinColumn(name = "home_address_id")
+    private Address homeAddress;
+
+    @OneToOne(
+            optional = true,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JoinColumn(name = "work_address_id")
+    private Address workAddress;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -57,5 +76,13 @@ public class User extends BaseAuditable implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public boolean hasHomeAddress() {
+        return homeAddress != null;
+    }
+
+    public boolean hasWorkAddress() {
+        return workAddress != null;
     }
 }

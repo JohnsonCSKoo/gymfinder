@@ -1,9 +1,7 @@
-package com.johnsoncskoo.gymfinder.common.model;
+package com.johnsoncskoo.gymfinder.address.model;
 
-import com.johnsoncskoo.gymfinder.common.enums.Country;
-import com.johnsoncskoo.gymfinder.common.enums.State;
-import com.johnsoncskoo.gymfinder.gym.model.Gym;
-import com.johnsoncskoo.gymfinder.user.User;
+import com.johnsoncskoo.gymfinder.address.enums.Country;
+import com.johnsoncskoo.gymfinder.address.enums.State;
 import jakarta.persistence.*;
 import lombok.*;
 

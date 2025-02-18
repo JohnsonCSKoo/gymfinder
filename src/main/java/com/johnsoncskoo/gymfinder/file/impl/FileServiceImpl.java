@@ -1,9 +1,9 @@
-package com.johnsoncskoo.gymfinder.file.Impl;
+package com.johnsoncskoo.gymfinder.file.impl;
 
 import com.johnsoncskoo.gymfinder.common.exception.FileStorageException;
 import com.johnsoncskoo.gymfinder.common.exception.ResourceNotFoundException;
 import com.johnsoncskoo.gymfinder.file.FileService;
-import com.johnsoncskoo.gymfinder.file.Repository.FileRepository;
+import com.johnsoncskoo.gymfinder.file.repository.FileRepository;
 import com.johnsoncskoo.gymfinder.file.dto.CreateFileDTO;
 import com.johnsoncskoo.gymfinder.file.dto.FileDTO;
 import com.johnsoncskoo.gymfinder.file.model.File;

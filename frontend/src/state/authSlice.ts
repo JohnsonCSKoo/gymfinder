@@ -1,17 +1,33 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { register, login } from '@/api/authApi';
 import { RegisterDto, LoginDto } from '@/@types/auth';
+import {jwtDecode} from 'jwt-decode';
 
 interface AuthState {
     token: string | null;
+    id: string | null;
     loading: boolean;
     error: string | null;
 }
 
+interface JwtPayload {
+    userId: string;
+    exp: number;
+}
+
 const authToken: string | null = sessionStorage.getItem('jwt');
+
+const getId = (): string | null => {
+    if (authToken) {
+        const decodedToken = jwtDecode<JwtPayload>(authToken);
+        return decodedToken.userId;
+    }
+    return null;
+};
 
 const initialState: AuthState = {
     token: authToken,
+    id: getId(),
     loading: false,
     error: null,
 };
@@ -46,6 +62,7 @@ const authSlice = createSlice({
     reducers: {
         logout: (state) => {
             sessionStorage.removeItem('jwt');
+            sessionStorage.removeItem('id');
             state.token = null;
         },
     },
@@ -58,6 +75,7 @@ const authSlice = createSlice({
             .addCase(registerUser.fulfilled, (state, action) => {
                 sessionStorage.setItem('jwt', action.payload);
                 state.token = action.payload;
+                state.id = jwtDecode(action.payload).id;
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
@@ -70,6 +88,7 @@ const authSlice = createSlice({
             .addCase(loginUser.fulfilled, (state, action) => {
                 sessionStorage.setItem('jwt', action.payload);
                 state.token = action.payload;
+                state.id = jwtDecode(action.payload).id;
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
