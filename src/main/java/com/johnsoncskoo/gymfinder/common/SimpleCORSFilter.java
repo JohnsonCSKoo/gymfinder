@@ -12,7 +12,7 @@ import java.io.IOException;
 @Component
 public class SimpleCORSFilter extends CorsFilter {
 
-    public static final String API_METHODS = "POST, GET, OPTIONS, DELETE";
+    public static final String API_METHODS = "PUT, PATCH, GET, HEAD, POST, DELETE, OPTIONS";
 
     public SimpleCORSFilter(CorsConfigurationSource configSource) {
         super(configSource);
@@ -22,13 +22,17 @@ public class SimpleCORSFilter extends CorsFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", API_METHODS);
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+        response.setHeader("Access-Control-Allow-Headers", "*");
 
-        filterChain.doFilter(request, response);
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            filterChain.doFilter(request, response);
+        }
     }
 
 }
