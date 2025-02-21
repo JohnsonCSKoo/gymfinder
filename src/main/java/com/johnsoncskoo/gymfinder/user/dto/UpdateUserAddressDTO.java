@@ -11,6 +11,7 @@ import lombok.*;
 public class UpdateUserAddressDTO {
     @Nullable private AddressDTO homeAddress;
     @Nullable private AddressDTO workAddress;
+    private boolean hasHomeAddress;
 
     public boolean hasHomeAddress() {
         return homeAddress != null;

@@ -24,7 +24,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors(cors ->
-                        cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()))
+                        cors.configurationSource(request -> {
+                            var config = new CorsConfiguration().applyPermitDefaultValues();
+                            config.addAllowedMethod("*");
+                            return config;
+                        }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/v1/auth/**").permitAll()

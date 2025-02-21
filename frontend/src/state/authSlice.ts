@@ -75,7 +75,7 @@ const authSlice = createSlice({
             .addCase(registerUser.fulfilled, (state, action) => {
                 sessionStorage.setItem('jwt', action.payload);
                 state.token = action.payload;
-                state.id = jwtDecode(action.payload).id;
+                state.id = getId();
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
@@ -88,7 +88,7 @@ const authSlice = createSlice({
             .addCase(loginUser.fulfilled, (state, action) => {
                 sessionStorage.setItem('jwt', action.payload);
                 state.token = action.payload;
-                state.id = jwtDecode(action.payload).id;
+                state.id = getId();
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;

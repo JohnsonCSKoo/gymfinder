@@ -23,11 +23,11 @@ public class UserServiceImpl implements UserService {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> ResourceNotFoundException.toException(User.class, userId));
 
-        user.setFirstName(user.getFirstName());
-        user.setLastName(user.getLastName());
-        user.setGender(user.getGender());
-        user.setPhoneNumber(user.getPhoneNumber());
-        user.setUserTag(user.getUserTag());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setGender(userDTO.getGender());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setUserTag(userDTO.getUserTag());
 
         var savedUser = userRepository.save(user);
         return UpdateUserDTO.fromEntity(savedUser);
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // update work address
-        if (addresses.hasWorkAddress()) {
+        if (addresses.hasHomeAddress() && addresses.hasWorkAddress()) {
             var address = user.getWorkAddress();
 
             address = getAddress(addresses.getWorkAddress(), address);

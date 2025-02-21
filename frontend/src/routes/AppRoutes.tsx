@@ -25,6 +25,7 @@ const AppRoutes: React.FC = () => {
                     <Route
                         path="/login"
                         element={token ? <Navigate to="/" /> :<LoginPage />} />
+                    <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </Layout>
         </Router>
