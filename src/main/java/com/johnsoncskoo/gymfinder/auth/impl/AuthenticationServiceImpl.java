@@ -107,14 +107,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void deleteAccount(DeleteAccountRequestDTO request) {
+        String email = jwtService.extractUsername(request.getToken());
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        email,
                         request.getPassword()
                 )
         );
 
-        var user = userRepository.findByEmail(request.getEmail())
+        var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found."));
 
         userRepository.delete(user);

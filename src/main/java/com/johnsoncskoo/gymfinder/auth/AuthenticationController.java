@@ -43,7 +43,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.refreshToken(request));
     }
 
-    @DeleteMapping("/account")
+    @PostMapping("/account")
     public ResponseEntity<HttpStatus> deleteAccount(
             @RequestBody @Validated DeleteAccountRequestDTO request
     ) {
@@ -51,7 +51,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<HttpStatus> logout(
             @RequestBody @Validated LogoutRequestDTO request
     ) {

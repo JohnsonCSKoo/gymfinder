@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteAccountRequestDTO {
-    private String email;
+    private String token;
     private String password;
 }
