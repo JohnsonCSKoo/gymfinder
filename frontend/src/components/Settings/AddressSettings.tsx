@@ -131,6 +131,13 @@ const AddressSettings: React.FC<AddressSettingsProps> = ({addressData, userId}) 
                     title: "Address updated successfully",
                     action: <ToastAction altText="Dismiss">Dismiss</ToastAction>
                 });
+
+                if (!isWorkAddressEnabled) {
+                    setFormData({
+                        ...formData,
+                        [AddressType.WORK]: addressData?.[AddressType.WORK] || null
+                    });
+                }
                 setIsEditing(false);
             }).catch((error) => {
                 console.error("Error updating address:", error);

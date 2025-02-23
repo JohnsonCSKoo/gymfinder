@@ -2,6 +2,7 @@ package com.johnsoncskoo.gymfinder.auth.impl;
 
 import com.johnsoncskoo.gymfinder.auth.dto.*;
 import com.johnsoncskoo.gymfinder.auth.AuthenticationService;
+import com.johnsoncskoo.gymfinder.common.exception.InvalidTokenException;
 import com.johnsoncskoo.gymfinder.common.exception.UserNotFoundException;
 import com.johnsoncskoo.gymfinder.security.JwtService;
 import com.johnsoncskoo.gymfinder.user.enums.Role;
@@ -66,17 +67,61 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponseDTO refreshToken(AuthenticationRequestDTO request) {
-        return null;
+    public AuthenticationResponseDTO refreshToken(RefreshTokenRequestDTO request) {
+        String token = request.getRefreshToken();
+        String email = jwtService.extractUsername(token);
+
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        if (!jwtService.isTokenValid(request.getRefreshToken(), user)) {
+            throw new InvalidTokenException("Invalid token.");
+        }
+
+        return authenticate(AuthenticationRequestDTO.builder()
+                .email(email)
+                .password(user.getPassword())
+                .build());
     }
 
     @Override
     public AuthenticationResponseDTO updatePassword(UpdatePasswordRequestDTO request) {
-        return null;
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getOldPassword()
+                )
+        );
+
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return authenticate(AuthenticationRequestDTO.builder()
+                .email(request.getEmail())
+                .password(request.getNewPassword())
+                .build());
     }
 
     @Override
-    public boolean deleteAccount(DeleteAccountRequestDTO request) {
-        return false;
+    public void deleteAccount(DeleteAccountRequestDTO request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        userRepository.delete(user);
+    }
+
+    @Override
+    public void logout(LogoutRequestDTO request) {
+        jwtService.invalidateToken(request.getToken());
     }
 }

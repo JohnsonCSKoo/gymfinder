@@ -1,9 +1,8 @@
 package com.johnsoncskoo.gymfinder.auth;
 
-import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationRequestDTO;
-import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationResponseDTO;
-import com.johnsoncskoo.gymfinder.auth.dto.RegisterRequestDTO;
+import com.johnsoncskoo.gymfinder.auth.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +27,35 @@ public class AuthenticationController {
             @RequestBody @Validated AuthenticationRequestDTO request
     ) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<AuthenticationResponseDTO> resetPassword(
+            @RequestBody @Validated UpdatePasswordRequestDTO request
+    ) {
+        return ResponseEntity.ok(authenticationService.updatePassword(request));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthenticationResponseDTO> refreshToken(
+            @RequestBody @Validated RefreshTokenRequestDTO request
+    ) {
+        return ResponseEntity.ok(authenticationService.refreshToken(request));
+    }
+
+    @DeleteMapping("/account")
+    public ResponseEntity<HttpStatus> deleteAccount(
+            @RequestBody @Validated DeleteAccountRequestDTO request
+    ) {
+        authenticationService.deleteAccount(request);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<HttpStatus> logout(
+            @RequestBody @Validated LogoutRequestDTO request
+    ) {
+        authenticationService.logout(request);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 }
