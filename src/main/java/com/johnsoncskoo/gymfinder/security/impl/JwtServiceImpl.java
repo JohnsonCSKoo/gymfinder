@@ -1,44 +1,57 @@
 package com.johnsoncskoo.gymfinder.security.impl;
 
 import com.johnsoncskoo.gymfinder.security.JwtService;
+import com.johnsoncskoo.gymfinder.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
 
     @Value("${jwt.private-key}")
     private String SECRET_KEY;
 
+    @Value("${jwt.expiration-time}")
+    private Integer EXPIRATION_TIME;
+
+    private final RedisTemplate<String, String> redisTemplate;
+
+    @Override
     public String extractUsername(String jwt) {
         return extractClaim(jwt, Claims::getSubject);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    @Override
+    public String generateToken(User userDetails) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 15 minutes
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getPublicSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    @Override
+    public String generateToken(Map<String, Object> extraClaims, User userDetails) {
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) // 15 minutes
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getPublicSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
@@ -52,9 +65,17 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(jwt, Claims::getExpiration);
     }
 
-    public boolean isTokenValid(String jwt, UserDetails userDetails) {
+    @Override
+    public boolean isTokenValid(String jwt, User userDetails) {
         final String username = extractUsername(jwt);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(jwt);
+        return username.equals(userDetails.getUsername()) &&
+                !isTokenExpired(jwt) &&
+                !redisTemplate.hasKey(jwt);
+    }
+
+    @Override
+    public void invalidateToken(String token) {
+        redisTemplate.opsForValue().set(token, "INVALID", EXPIRATION_TIME, TimeUnit.MILLISECONDS);
     }
 
     private boolean isTokenExpired(String jwt) {

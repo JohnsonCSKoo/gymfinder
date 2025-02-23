@@ -1,7 +1,5 @@
 package com.johnsoncskoo.gymfinder.gym.dto;
 
-import com.johnsoncskoo.gymfinder.common.model.Address;
-import com.johnsoncskoo.gymfinder.common.dto.AddressDTO;
 import com.johnsoncskoo.gymfinder.gym.enums.EquipmentType;
 import com.johnsoncskoo.gymfinder.gym.model.Equipment;
 import lombok.Builder;

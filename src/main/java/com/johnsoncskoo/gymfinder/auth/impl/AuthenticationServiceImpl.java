@@ -1,18 +1,21 @@
 package com.johnsoncskoo.gymfinder.auth.impl;
 
-import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationRequestDTO;
-import com.johnsoncskoo.gymfinder.auth.dto.AuthenticationResponseDTO;
+import com.johnsoncskoo.gymfinder.auth.dto.*;
 import com.johnsoncskoo.gymfinder.auth.AuthenticationService;
-import com.johnsoncskoo.gymfinder.auth.dto.RegisterRequestDTO;
+import com.johnsoncskoo.gymfinder.common.exception.InvalidTokenException;
+import com.johnsoncskoo.gymfinder.common.exception.UserNotFoundException;
 import com.johnsoncskoo.gymfinder.security.JwtService;
 import com.johnsoncskoo.gymfinder.user.enums.Role;
-import com.johnsoncskoo.gymfinder.user.User;
-import com.johnsoncskoo.gymfinder.user.UserRepository;
+import com.johnsoncskoo.gymfinder.user.model.User;
+import com.johnsoncskoo.gymfinder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +37,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
         userRepository.save(user);
 
-        var jwt = jwtService.generateToken(user);
+        var extraClaims = new HashMap<String, Object>();
+        extraClaims.put("userId", user.getId());
+
+        var jwt = jwtService.generateToken(extraClaims, user);
         return AuthenticationResponseDTO.builder()
                 .token(jwt)
                 .build();
@@ -50,10 +56,74 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        var extraClaims = new HashMap<String, Object>();
+        extraClaims.put("userId", user.getId());
 
         return AuthenticationResponseDTO.builder()
-                .token(jwtService.generateToken(user))
+                .token(jwtService.generateToken(extraClaims, user))
                 .build();
+    }
+
+    @Override
+    public AuthenticationResponseDTO refreshToken(RefreshTokenRequestDTO request) {
+        String token = request.getRefreshToken();
+        String email = jwtService.extractUsername(token);
+
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        if (!jwtService.isTokenValid(request.getRefreshToken(), user)) {
+            throw new InvalidTokenException("Invalid token.");
+        }
+
+        return authenticate(AuthenticationRequestDTO.builder()
+                .email(email)
+                .password(user.getPassword())
+                .build());
+    }
+
+    @Override
+    public AuthenticationResponseDTO updatePassword(UpdatePasswordRequestDTO request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getOldPassword()
+                )
+        );
+
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return authenticate(AuthenticationRequestDTO.builder()
+                .email(request.getEmail())
+                .password(request.getNewPassword())
+                .build());
+    }
+
+    @Override
+    public void deleteAccount(DeleteAccountRequestDTO request) {
+        String email = jwtService.extractUsername(request.getToken());
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        email,
+                        request.getPassword()
+                )
+        );
+
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found."));
+
+        userRepository.delete(user);
+    }
+
+    @Override
+    public void logout(LogoutRequestDTO request) {
+        jwtService.invalidateToken(request.getToken());
     }
 }

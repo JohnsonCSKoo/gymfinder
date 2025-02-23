@@ -1,6 +1,6 @@
 package com.johnsoncskoo.gymfinder.gym.model;
 
-import com.johnsoncskoo.gymfinder.common.model.Address;
+import com.johnsoncskoo.gymfinder.address.model.Address;
 import com.johnsoncskoo.gymfinder.common.model.Auditable;
 import com.johnsoncskoo.gymfinder.file.model.Image;
 import com.johnsoncskoo.gymfinder.gym.enums.OpeningStatus;

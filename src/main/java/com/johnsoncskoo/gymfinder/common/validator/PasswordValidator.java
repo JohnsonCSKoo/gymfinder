@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class PasswordValidator implements ConstraintValidator<Password, String> {
 
     private static final String REGEX_PATTERN =
-            "^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$";
+            "^(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\\w\\s:])(\\S){8,}$";
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext constraintValidatorContext) {

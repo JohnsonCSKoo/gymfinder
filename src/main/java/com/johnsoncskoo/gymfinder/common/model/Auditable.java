@@ -1,6 +1,6 @@
 package com.johnsoncskoo.gymfinder.common.model;
 
-import com.johnsoncskoo.gymfinder.user.User;
+import com.johnsoncskoo.gymfinder.user.model.User;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

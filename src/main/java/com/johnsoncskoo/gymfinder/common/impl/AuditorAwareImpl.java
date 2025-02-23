@@ -1,6 +1,6 @@
 package com.johnsoncskoo.gymfinder.common.impl;
 
-import com.johnsoncskoo.gymfinder.user.User;
+import com.johnsoncskoo.gymfinder.user.model.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

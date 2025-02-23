@@ -1,6 +1,6 @@
 package com.johnsoncskoo.gymfinder.security;
 
-import com.johnsoncskoo.gymfinder.user.UserRepository;
+import com.johnsoncskoo.gymfinder.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
